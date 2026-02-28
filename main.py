@@ -30,21 +30,37 @@ def menu(todofiles_id):
         print("Locked.")
         return
     retries = 3
-    try:
-        while retries > 0:
-            password = input("Enter your PIN: ")
+ 
+    while retries > 0:
+        password = input("Enter your PIN: ")
 
-            if password == choices["PIN"]:
-                print(f"File1: {choices['data']}")
-            else:
-                retries -= 1 
-                print(f"Incorrect PIN, you have {retries} left.")
-            if retries == 0:
-                choices["Locked"] = True
-                print("Retries used up, file locked.")
-                return
-    except ValueError:
-        print("Invalid Input")
+        if password == choices["PIN"]:
+            print(f"File1: {choices['data']}")
+            while True:
+                print("1. Edit File")
+                print("2. Delete File")
+                print("3. Return to Menu")
+
+                choice = int(input("Choose an option(1-2): "))
+
+                if choice == 1:
+                    new_text = input("Type Here: ")
+                    choices["data"] = new_text
+                    print(f"File1: {choices['data']}")
+
+                if choice == 2:
+                    pass
+                    
+
+                if choice == 3:
+                    return
+        else:
+            retries -= 1 
+            print(f"Incorrect PIN, you have {retries} left.")
+    if retries == 0:
+        choices["Locked"] = True
+        print("Retries used up, file locked.")
+        return
 
 
 loop = True
