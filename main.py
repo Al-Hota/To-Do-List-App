@@ -49,8 +49,9 @@ def menu(todofiles_id):
                     print(f"File1: {choices['data']}")
 
                 if choice == 2:
-                    pass
-                    
+                    del todofiles[choice]
+                    return
+
 
                 if choice == 3:
                     return
