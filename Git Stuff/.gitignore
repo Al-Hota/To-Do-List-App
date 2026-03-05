@@ -1,0 +1,23 @@
+
+todofiles = {
+    1: {
+        "File": "File1",
+        "data": "text",
+        "PIN": "4334",
+        "Locked": False
+    },
+
+    2:  {
+        "File": "File2",
+        "data": "text",
+        "PIN": "2313",
+        "Locked": False
+    },
+
+    3: {
+        "File": "File3",
+        "data": "text",
+        "PIN": "4234",
+        "Locked": False
+    }
+}

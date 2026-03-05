@@ -1,32 +1,40 @@
-todofiles = {
-    1: {
-        "File": "File1",
-        "data": "text",
-        "PIN": "4334",
-        "Locked": False
-    },
+import json
+try:
+    with open("data.json", "r") as f:
+        todofiles = json.load(f)
+except FileNotFoundError:
+    todofiles = {}
+except json.JSONDecodeError:
+    todofiles = {}
+def save():
+    with open("data.json", "w") as f:
+        json.dump(todofiles, f, indent=4)
 
-    2:  {
-        "File": "File2",
-        "data": "text",
-        "PIN": "2313",
-        "Locked": False
-    },
-
-    3: {
-        "File": "File3",
-        "data": "text",
-        "PIN": "4234",
-        "Locked": False
-    }
-}
 
 
 
 def menu(todofiles_id):
     choices = todofiles[todofiles_id]
+    if not todofiles:
+        create = input("No File found, would you like to create a new file?(Y/N)")
+        if create.upper() == "Y":
+            first_id = "1"
+            todofiles[first_id] = {
+                "name": "untilted",
+                "pin": "",
+                "data": "",
+                "locked": False
+            }
+            save()
+    
+        elif create.upper() == "N":
+            print("Goodbye!")
+            exit()
+        else:
+            print("Invalid Input")
+            return
 
-    if choices == ["Locked"]:
+    if choices["locked"]:
         print("Locked.")
         return
     retries = 3
@@ -34,22 +42,29 @@ def menu(todofiles_id):
     while retries > 0:
         password = input("Enter your PIN: ")
 
-        if password == choices["PIN"]:
-            print(f"File1: {choices['data']}")
+        if password == choices["pin"]:
+            print(f"File: {choices['data']}")
             while True:
-                print("1. Edit File")
+                print("\n1. Edit File")
                 print("2. Delete File")
                 print("3. Return to Menu")
-
-                choice = int(input("Choose an option(1-2): "))
+                try:
+                    choice = int(input("Choose an option(1-2): "))
+                except ValueError:
+                    print("Please Enter a Number: ")
+                    continue
 
                 if choice == 1:
                     new_text = input("Type Here: ")
                     choices["data"] = new_text
-                    print(f"File1: {choices['data']}")
+                    print(f"File: {choices['data']}")
+                    save()
+        
+                 
 
                 if choice == 2:
-                    del todofiles[choice]
+                    del todofiles[todofiles_id]
+                    save()
                     return
 
 
@@ -66,25 +81,36 @@ def menu(todofiles_id):
 
 loop = True
 while loop:
-    print("==NOTES==")
-    for todofiles_id, data in todofiles.items():
-        print(f"{todofiles_id}. {data['File']}")
-    
-    try:
-        choice = int(input("Please choose an option(1-4): "))
-    except ValueError:
-        print("Invalid Input")
-        continue
-    if choice == 4:
-        print("Goodbye!")
-        loop = False
+    print("\n==NOTES==")
+
+    if not todofiles:
+        print("No File Found")
+    else:
+        for todofiles_id, data in todofiles.items():
+            status = " [LOCKED] " if data['locked'] else ""
+            print(f"{todofiles_id}. {data['name']}{status}")
+        
+    print("\nN. NEW FILE")
+    print("\nQ. QUIT")
+
+    choice = input("Choose a file or an option: ")
+
+    if choice.upper() == "N":
+        new_id = str(len(todofiles) + 1)
+        todofiles[new_id] = {
+            "name": input("Input Name: "),
+            "pin": input("Set a Pin(Blank for none): "),
+            "data": '',
+            "locked": False
+        }
+        save()
     elif choice in todofiles:
         menu(choice)
+    elif choice.upper() == "Q":
+        print("Goodbye!")
+        loop = False
     else:
         print("Invalid Input")
-       
-
-
 
 
 
